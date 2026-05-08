@@ -13,10 +13,15 @@ export function ProfileCard({ user }: ProfileCardProps) {
 
   return (
     <div
-      className="flex flex-1 profile-card py-1 px-2 justify-between flex-col border-2 border-transparent hover:border-red-500 transition duration-300 ease-in-out rounded-sm cursor-pointer md:min-w-[180px] md:max-w-[250px]"
+      className="flex profile-card py-1 px-2 justify-between items-center flex-col border-2 border-transparent md:hover:border-red-500 transition duration-300 ease-in-out rounded-sm cursor-pointer md:min-w-[180px]"
       onClick={handleClick}
     >
-      <img src={image} alt={`${firstName} ${lastName}`} />
+      <img
+        src={image}
+        alt={`${firstName} ${lastName} profile image`}
+        width={150}
+        height={150}
+      />
       <div>
         <h2>
           {firstName} {lastName}
