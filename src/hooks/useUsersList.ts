@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { UserProfile } from "../types&interfaces";
 import { getURL } from "../utils";
 
@@ -11,11 +11,29 @@ export const useUsersList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const cacheRef = useRef<
+    Record<
+      string,
+      {
+        users: UserProfile[];
+        totalPages: number;
+      }
+    >
+  >({});
 
   useEffect(() => {
     const controller = new AbortController();
 
     const fetchUsers = async () => {
+      const cacheKey = `${page}-${filter}`;
+
+      if (cacheRef.current[cacheKey]) {
+        const cached = cacheRef.current[cacheKey];
+        setUserList(cached.users);
+        setTotalPages(cached.totalPages);
+        return;
+      }
+
       try {
         setIsLoading(true);
         setIsError(false);
@@ -34,13 +52,18 @@ export const useUsersList = () => {
 
         const data = await res.json();
 
-        setUserList(data.users);
-        setTotalPages(Math.ceil(data.total / LIMIT_PER_PAGE));
-      } catch (err) {
-        if (err instanceof Error && err.name === "AbortError") {
-          return;
-        }
+        const users = data.users;
+        const totalPages = Math.ceil(data.total / LIMIT_PER_PAGE);
 
+        cacheRef.current[cacheKey] = {
+          users,
+          totalPages,
+        };
+
+        setUserList(users);
+        setTotalPages(totalPages);
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") return;
         setIsError(true);
       } finally {
         setIsLoading(false);
