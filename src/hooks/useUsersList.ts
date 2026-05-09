@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import type { UserProfile } from "../types&interfaces";
+import { getURL } from "../utils";
 
 const LIMIT_PER_PAGE = 10;
 
@@ -21,10 +22,7 @@ export const useUsersList = () => {
 
         const skip = (page - 1) * LIMIT_PER_PAGE;
         const value = encodeURIComponent(filter);
-
-        const url = filter
-          ? `https://dummyjson.com/users/filter?key=bloodGroup&value=${value}&limit=${LIMIT_PER_PAGE}&skip=${skip}`
-          : `https://dummyjson.com/users?limit=${LIMIT_PER_PAGE}&skip=${skip}`;
+        const url = getURL(LIMIT_PER_PAGE, skip, value);
 
         const res = await fetch(url, {
           signal: controller.signal,

@@ -18,7 +18,7 @@ function App() {
 
   return (
     <>
-      <section className="flex flex-col md:gap-3 gap-4 md:py-5 p-2">
+      <section className="flex flex-col md:gap-3 gap-4 md:py-5 p-2 relative">
         <div>
           <h1 className="leading-none">Find a possible blood donor</h1>
           <p className="md:px-10 text-center">
